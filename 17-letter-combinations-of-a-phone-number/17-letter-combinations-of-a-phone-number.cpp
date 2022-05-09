@@ -1,12 +1,12 @@
 class Solution {
 public:
     
-    string buttons[11] = {"",
-                         "","abc","def",
-                         "ghi","jkl","mno",
-                         "pqrs","tuv","wxyz"};
+    map<char, string> buttons = {
+        {'2', "abc"}, {'3', "def"}, {'4', "ghi"},
+        {'5', "jkl"}, {'6', "mno"}, {'7', "pqrs"},
+        {'8', "tuv"}, {'9', "wxyz"}
+    };
     
-    int visited[11][4] = {0, };
     vector<string> ans;
     
     vector<string> letterCombinations(string digits) {
@@ -14,37 +14,23 @@ public:
         if (digits.length() == 0) 
             return ans;
         
-        for(int i = 0; i < buttons[digits[0] - '0'].length(); i++){
-            search(digits, "", 0, i);
-            memset(visited,0,sizeof(visited));
-        }
+        search(digits,"", 0);
         
         return ans;
     }
     
-    void search(string digits, string letters, int digitIdx, int letterIdx) {
-        
-        int button = digits[digitIdx] - '0';
-        visited[digitIdx][letterIdx] = 1;
-        letters += buttons[button][letterIdx];
+    void search(string digits, string currentLetters, int idx) {
         
         // base case
-        if(letters.length() == digits.length()){
-            ans.push_back(letters);
+        if(idx == digits.length()){
+            ans.push_back(currentLetters);
             return;
         }
         
-        for(int i = digitIdx + 1; i < digits.length();i++){
-            
-            int nextButton = digits[i] - '0';
-            
-            for(int j = 0; j < buttons[nextButton].length(); j++){
-                
-                if(visited[i][j]) continue;
-                
-                search(digits, letters, i, j);
-                visited[i][j] = 0;
-            }
+        char currentButton = digits[idx];
+        string letter = buttons[currentButton];
+        for(int i = 0; i < letter.length();i++){
+            search(digits, currentLetters + letter[i], idx + 1);
         }
     }
 };
